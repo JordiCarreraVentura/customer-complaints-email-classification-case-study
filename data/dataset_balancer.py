@@ -27,7 +27,7 @@ class DatasetBalancer:
                 disambiguations[x] = best_y
                 continue
 
-            next_freq, next_y = y_dist[1]
+            next_y, next_freq = y_dist[1]
             if next_freq / best_freq <= margin:
                 disambiguations[x] = best_y
             else:
