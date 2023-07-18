@@ -100,7 +100,7 @@ class DatasetBalancer:
         >>> assert len(set([Y.count(y) for y in set(Y)])) == 1
 
 
-        3. Deduplication
+        3. Ambiguities
 
         >>> db = DatasetBalancer()
         >>> XY = [
@@ -200,7 +200,7 @@ if __name__ == '__main__':
 
 
 
-    # Duplicate X
+    # Ambiguous x_i
 
     db = DatasetBalancer()
 
