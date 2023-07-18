@@ -1,4 +1,12 @@
+# ignore task documentation
+doc/assignment .pdf
+
 # ignore environment files
 bin/*
+data/*
+etc/*
+include/*
 lib/*
+notebooks/.ipynb*/*
+share/*
 pyvenv.cfg
