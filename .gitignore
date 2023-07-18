@@ -1,0 +1,4 @@
+# ignore environment files
+bin/*
+lib/*
+pyvenv.cfg
