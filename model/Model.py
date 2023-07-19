@@ -7,50 +7,68 @@ from sklearn.model_selection import KFold
 from sklearn.svm import LinearSVC
 
 
+DEFAULT_CONFIG = {
+
+    'vectorizer': {
+        'ngram_range': (3, 6),
+        'max_df': 0.2,
+        'min_df': 5,
+        'norm': 'l2',
+        'analyzer': 'char'
+    },
+
+    'feature_selector': {
+        'criterion': 'entropy',
+        'max_depth': 5,
+        'min_samples_split': 5,
+        'min_samples_leaf': 3
+    },
+
+    'feature_selection': {
+        'max_features': 10
+    },
+
+    'classifier': {
+        'model': None
+    }
+
+}
+
+
 class Model:
 
-    def __init__(
-        self,
-        ngram_range=(3, 6),
-        max_df=0.2,
-        min_df=5,
-        norm='l2',
-        analyzer='char',
-
-        criterion='entropy',
-        max_depth=5,
-        min_samples_split=5,
-        min_samples_leaf=3
-
-    ):
-
-        self.selector = DecisionTreeClassifier(
-            criterion=criterion,
-            max_depth=max_depth,
-            min_samples_split=min_samples_split,
-            min_samples_leaf=min_samples_leaf
-        )
+    def __init__(self, config=DEFAULT_CONFIG):
+        self.__dict__.update(config)
+        self.selector = DecisionTreeClassifier(**config['feature_selector'])
         self.select = None
 
-        self.vec = TfidfVectorizer(
-            max_df=max_df,
-            min_df=min_df,
-            norm=norm,
-            analyzer=analyzer
-        )
+        self.vec = TfidfVectorizer(**config['vectorizer'])
 
-        self.model = LinearSVC(dual=True)
+        model_params = \
+            {key: val for key, val in config['classifier'].items() if key != 'model'}
+
+        self.model = self.__dict__['classifier']['model'](**model_params)
 
 
     def train(self, X, Y):
+        if not self.model:
+            raise ValueError('A model must be defined as `config["classifier"]["model"]`')
         X_vec = self.vec.fit_transform(X, Y)
         self.selector.fit(X_vec, Y)
-        self.select = SelectFromModel(self.selector, prefit=True)
+        self.select = SelectFromModel(
+            self.selector,
+            prefit=True,
+            max_features=self.__dict__['feature_selection']['max_features']
+        )
         X_select = self.select.transform(X_vec)
         self.model.fit(X_select, Y)
 
 
     def predict(self, X):
+        if not self.model:
+            raise ValueError('A model must be defined as `config["classifier"]["model"]`')
+        elif not self.select:
+            raise ValueError('The feature selector did not initialize correctly.')
         X_vec = self.vec.transform(X)
         X_select = self.select.transform(X_vec)
         return self.model.predict(X_select)
@@ -58,32 +76,50 @@ class Model:
 
 if __name__ == '__main__':
 
-    model = Model(
-        ngram_range=(1, 1),
-        max_df=1.0,
-        min_df=1,
-        norm='l2',
-        analyzer='word',
+    config = {
+        'vectorizer': {
+            'ngram_range': (1, 1),
+            'max_df': 1.0,
+            'min_df': 1,
+            'norm': 'l2',
+            'analyzer': 'word'
+        },
+        'feature_selector': {
+            'criterion': 'entropy',
+            'max_depth': 5,
+            'min_samples_split': 10,
+            'min_samples_leaf': 5
+        },
+        'feature_selection': {
+            'max_features': 1
+        },
+        'classifier': {
+            'dual': True,
+            'model': LinearSVC
+        }
+    }
 
-        criterion='entropy',
-        max_depth=5,
-        min_samples_split=10,
-        min_samples_leaf=5
-    )
+    target_accuracy = 0.85
+
+    model = Model(config=config)
+
 
     import random
 
     from sklearn.metrics import precision_score, recall_score
 
+
     def new_record(category):
+
         if category == 1:
             text = ['a' + str(random.randrange(1, 101)) for _ in range(50)] \
-                   + ['a' + str(random.randrange(5, 10)) for _ in range(30)] \
-                   + ['a' + str(1) for _ in range(10)]
+                   + ['a' + str(1 if random.random() < target_accuracy else 0)
+                      for _ in range(10)]
         else:
             text = ['a' + str(random.randrange(1, 101)) for _ in range(50)] \
-                   + ['a' + str(random.randrange(0, 5)) for _ in range(30)] \
-                   + ['a' + str(0) for _ in range(10)]
+                   + ['a' + str(0 if random.random() < target_accuracy else 1)
+                      for _ in range(10)]
+
         return ' '.join(text)
 
 
