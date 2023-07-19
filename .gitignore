@@ -13,3 +13,7 @@ pyvenv.cfg
 
 # Python cache
 model/__pycache__/Model.cpython-39.pyc
+
+# Credentials files
+doc/credentials.txt
+doc/mlflow-consumer-complaints-case-study.pem
