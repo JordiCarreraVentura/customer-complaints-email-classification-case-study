@@ -98,6 +98,40 @@ if __name__ == '__main__':
 
 
 
+"""
+    # LR3: 81.5% micro-averaged precision and recall, lowest variance
+
+    config['vectorizer']: {
+        'ngram_range': (1, 1),
+        'max_df': 1.0,
+        'min_df': 1,
+        'norm': 'l2',
+        'analyzer': 'word'
+    }
+    config['feature_selector'] = {
+        'penalty': 'l2',
+        'max_iter': 300,
+        'solver': 'sag',
+        'n_jobs': 4,
+        'multi_class': 'ovr',
+    }
+    config['feature_selection'] = {
+        'max_features': 3000
+    }
+    config['classifier']: {
+        'penalty': 'l1',                # slightly better than L2
+        #'penalty': 'l2',
+        'max_iter': 100,
+        'solver': 'saga',
+        'n_jobs': 4,
+        #'multi_class': 'ovr',
+        'multi_class': 'multinomial',   # better than 'ovr'
+        'model': LogisticRegression,
+    }
+
+"""
+
+
 
 """
 
