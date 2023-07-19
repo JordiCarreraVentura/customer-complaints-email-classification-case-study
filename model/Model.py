@@ -3,6 +3,7 @@ from copy import deepcopy as cp
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.feature_selection import SelectFromModel
+from sklearn.linear_model import LogisticRegression
 from sklearn.model_selection import KFold
 from sklearn.svm import LinearSVC
 
@@ -42,7 +43,8 @@ class Model:
         self.__do_select = True if self.__dict__['feature_selector'] \
                            and self.__dict__['feature_selection'] \
                            else False
-        self.selector = DecisionTreeClassifier(**config['feature_selector'])
+        #self.selector = DecisionTreeClassifier(**config['feature_selector'])
+        self.selector = LogisticRegression(**config['feature_selector'])
         self.select = None
 
         self.vec = TfidfVectorizer(**config['vectorizer'])
