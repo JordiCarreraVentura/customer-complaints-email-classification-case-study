@@ -15,7 +15,10 @@ pyvenv.cfg
 __pycache__/*
 */__pycache__/*
 
-# Credentials files
+# model artifacts
+artifacts/*
+
+# credentials files
 doc/credentials.txt
 doc/mlflow-consumer-complaints-case-study.pem
 doc/mlflow.tracking_server.host.txt
