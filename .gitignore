@@ -12,8 +12,8 @@ share/*
 pyvenv.cfg
 
 # Python cache
-model/__pycache__/*
 __pycache__/*
+*/__pycache__/*
 
 # Credentials files
 doc/credentials.txt
