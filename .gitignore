@@ -10,3 +10,6 @@ lib/*
 notebooks/.ipynb*/*
 share/*
 pyvenv.cfg
+
+# Python cache
+model/__pycache__/Model.cpython-39.pyc

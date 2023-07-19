@@ -39,6 +39,9 @@ class Model:
 
     def __init__(self, config=DEFAULT_CONFIG):
         self.__dict__.update(config)
+        self.__do_select = True if self.__dict__['feature_selector'] \
+                           and self.__dict__['feature_selection'] \
+                           else False
         self.selector = DecisionTreeClassifier(**config['feature_selector'])
         self.select = None
 
@@ -51,26 +54,34 @@ class Model:
 
 
     def train(self, X, Y):
+
         if not self.model:
             raise ValueError('A model must be defined as `config["classifier"]["model"]`')
+
         X_vec = self.vec.fit_transform(X, Y)
-        self.selector.fit(X_vec, Y)
-        self.select = SelectFromModel(
-            self.selector,
-            prefit=True,
-            max_features=self.__dict__['feature_selection']['max_features']
-        )
-        X_select = self.select.transform(X_vec)
+
+        if self.__do_select:
+            self.selector.fit(X_vec, Y)
+            self.select = SelectFromModel(
+                self.selector,
+                prefit=True,
+                max_features=self.__dict__['feature_selection']['max_features']
+            )
+            X_select = self.select.transform(X_vec)
+        else:
+            X_select = X_vec
+
         self.model.fit(X_select, Y)
 
 
     def predict(self, X):
         if not self.model:
             raise ValueError('A model must be defined as `config["classifier"]["model"]`')
-        elif not self.select:
+        elif self.__do_select and not self.select:
             raise ValueError('The feature selector did not initialize correctly.')
         X_vec = self.vec.transform(X)
-        X_select = self.select.transform(X_vec)
+        X_select = self.select.transform(X_vec) if self.__do_select \
+                   else X_vec
         return self.model.predict(X_select)
 
 
