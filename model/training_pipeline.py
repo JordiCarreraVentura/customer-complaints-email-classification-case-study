@@ -109,8 +109,6 @@ if __name__ == '__main__':
             f'{component_name}__{key}': val
             for key, val in params.items()
         })
-    mlflow.log_params(full_params)
-
 
     kf = KFold(n_splits=5, shuffle=True)
     for _n_fold, (train_idx, test_idx) in enumerate(kf.split(X)):
@@ -121,6 +119,8 @@ if __name__ == '__main__':
             mlflow.start_run(run_name=f'{run_name}/fold={n_fold}')
         except Exception:
             pass
+
+        mlflow.log_params(full_params)
 
         #print(len(train_idx), len(test_idx))
         X_train = [X[idx] for idx in train_idx]
