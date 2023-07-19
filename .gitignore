@@ -12,8 +12,10 @@ share/*
 pyvenv.cfg
 
 # Python cache
-model/__pycache__/Model.cpython-39.pyc
+model/__pycache__/*
+__pycache__/*
 
 # Credentials files
 doc/credentials.txt
 doc/mlflow-consumer-complaints-case-study.pem
+doc/mlflow.tracking_server.host.txt
