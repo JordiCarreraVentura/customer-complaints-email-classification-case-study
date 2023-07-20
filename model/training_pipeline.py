@@ -113,7 +113,7 @@ if __name__ == '__main__':
 
     XY = list(zip(X, Y))
     random.shuffle(XY)
-    XY = XY[:5000]
+    #XY = XY[:5000]
     X, Y = list(zip(*XY))
 
     host_file = os.path.join(curr, 'doc', 'mlflow.tracking_server.host.txt')
