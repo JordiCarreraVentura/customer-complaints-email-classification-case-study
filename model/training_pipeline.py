@@ -182,8 +182,7 @@ if __name__ == '__main__':
         mlflow.log_metric('accuracy', score)
         mlflow.end_run()
 
-        #mlflow.sklearn.save_model(pipe, f"artifacts/{run_name}/{n_fold}")
-
-        mlflow.sklearn.log_model(pipe, f"artifacts/{run_name}/{n_fold}")
+        #mlflow.sklearn.log_model(pipe, f"artifacts/{run_name}/{n_fold}")
+        mlflow.sklearn.save_model(pipe, f"artifacts/{run_name}/{n_fold}")
 
 
